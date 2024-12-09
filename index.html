@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des super-héros</title>
+    <script src="https://unpkg.com/vue@latest"></script>
+    <script src="https://unpkg.com/axios@latest"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div id="app" class="container mt-5">
+    <h1>Liste des super-héros</h1>
+    <input type="checkbox" v-model="isChecked">
+    <label>Afficher les pouvoirs</label>
+
+    <div class="mt-3 mb-4">
+        <input type="text" class="form-control list-group-item list-group-item-action"
+               placeholder="Entrez un nom" v-model="filtrerNom">
+    </div>
+    <button class="btn btn-primary" @click="resetFilter">Réinitialiser</button>
+
+    <div v-for="hero in filteredSuperheros"
+         class="list-group-item list-group-item-action"
+         @click="versDetails(hero.id)"
+         style="cursor: pointer;">
+        <div class="d-flex w-100 justify-content-between" style="align-items: center">
+            <h5>{{ hero.name }}</h5>
+            <img v-bind:src="hero.images.md" class="rounded-circle" style="width: 50px">
+            <div>
+                <small v-if="isChecked"> Intelligence: {{ hero.powerstats.intelligence }}</small>
+                <small v-if="isChecked"> Force: {{ hero.powerstats.strength }}</small>
+                <small v-if="isChecked"> Vitesse: {{ hero.powerstats.speed }}</small>
+                <small v-if="isChecked"> Durabilité: {{ hero.powerstats.durability }}</small>
+                <small v-if="isChecked"> Pouvoir: {{ hero.powerstats.power }}</small>
+                <small v-if="isChecked"> Combat: {{ hero.powerstats.combat }}</small>
+            </div>
+            <small>{{ hero.id }}</small>
+        </div>
+    </div>
+</div>
+
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                superheroes: [],
+                isChecked: false,
+                filtrerNom: ''
+            };
+        },
+        mounted() {
+
+                axios.get('https://cdn.jsdelivr.net/gh/rtomczak/superhero-api@0.3.0/api/all.json')
+                    .then(response => {
+                        this.superheroes = response.data; // Récupérer les données des superhéros
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+
+
+            fetch('navbar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('navbar-placeholder').innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Erreur lors du chargement de la navbar:', error);
+                });
+        },
+        computed: {
+            filteredSuperheros() {
+                return this.superheroes.filter(hero =>
+                    hero.name.toLowerCase().includes(this.filtrerNom.toLowerCase())
+                );
+            }
+        },
+        methods: {
+            resetFilter() {
+                this.filtrerNom = '';
+            },
+            versDetails(heroId) {
+                window.location.href = `detail.html?id=${heroId}`;
+            }
+        }
+    });
+
+    app.mount('#app');
+</script>
+</body>
+</html>
