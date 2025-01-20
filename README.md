@@ -1,6 +1,8 @@
 Live demo : https://7maelle.github.io/SuperHeroes-Matcher/
 
 SuperHeroes Matcher
+![Aperçu du projet](./vue1.png)
+
 
 SuperHeroes Matcher est une application web permettant de comparer et de trouver des super-héros qui correspondent à des critères spécifiques. Ce projet a été conçu dans le but de mettre en pratique des compétences en développement web frontend et Vue.js
 
